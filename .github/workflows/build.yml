@@ -23,8 +23,6 @@ jobs:
   build:
     name: build
     runs-on: ubuntu-latest
-    # Prevent resource consuming cron triggered runs in forks
-    if: (!github.event.repository.fork || github.event_name == 'workflow_dispatch')
     strategy:
       fail-fast: false
       matrix:
@@ -115,7 +113,7 @@ jobs:
       - name: upload images
         uses: actions/upload-artifact@v3
         with:
-          name: seedsigner_os_images
+          name: seedsigner_os_images_${{ matrix.target }}
           path: "seedsigner-os/images/*.img"
           if-no-files-found: error
           # maximum 90 days retention
@@ -129,7 +127,6 @@ jobs:
       - name: download images
         uses: actions/download-artifact@v3
         with:
-          name: seedsigner_os_images
           path: images
 
       - name: list images
@@ -145,12 +142,12 @@ jobs:
       - name: write sha256sum
         run: |
           cd images
-          sha256sum *.img > seedsigner_os.${{ env.source_hash }}.sha256
+          find . -name "*.img" -print0 | xargs -0 cat | sha256sum | tee seedsigner_os.${{ env.source_hash }}.sha256
 
       - name: upload checksums
         uses: actions/upload-artifact@v3
         with:
-          name: seedsigner_os_images
+          name: seedsigner_os_images_sha256
           path: "images/*.sha256"
           if-no-files-found: error
           # maximum 90 days retention
