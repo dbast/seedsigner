@@ -13,7 +13,7 @@ jobs:
         target: [ "pi0", "pi2", "pi02w", "pi4" ]
     steps:
       - name: checkout seedsigner-os
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: "seedsigner/seedsigner-os"
           submodules: true
@@ -26,7 +26,7 @@ jobs:
           echo "builder_hash=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
 
       - name: checkout source
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           path: "seedsigner-os/opt/rootfs-overlay/opt"
 
