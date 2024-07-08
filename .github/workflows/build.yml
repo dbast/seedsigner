@@ -31,7 +31,7 @@ jobs:
         target: [ "pi0", "pi2", "pi02w", "pi4" ]
     steps:
       - name: checkout seedsigner-os
-        uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4.1.6
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
         with:
           repository: "seedsigner/seedsigner-os"
           # use the os-ref input parameter in case of workflow_dispatch or default to main in case of cron triggers
@@ -42,7 +42,7 @@ jobs:
           fetch-depth: 0
 
       - name: checkout source
-        uses: actions/checkout@a5ac7e51b41094c92402da3b24376905380afc29 # v4.1.6
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
         with:
           # ref defaults to repo default-branch=dev (cron) or SHA of event (workflow_dispatch)
           path: "seedsigner-os/opt/rootfs-overlay/opt"
@@ -78,7 +78,7 @@ jobs:
           ls -la src
 
       - name: restore build cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         # Caching reduces the build time to ~50% (currently: ~30 mins instead of ~1 hour,
         # while consuming ~850 MB storage space).
         with:
@@ -113,7 +113,7 @@ jobs:
           ls -la seedsigner-os/images
 
       - name: upload images
-        uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808 # v4.3.3
+        uses: actions/upload-artifact@0b2256b8c012f0828dc542b3febcab082c67f72b # v4.3.4
         with:
           name: seedsigner_os_images
           path: "seedsigner-os/images/*.img"
@@ -127,7 +127,7 @@ jobs:
     needs: build
     steps:
       - name: download images
-        uses: actions/download-artifact@65a9edc5881444af0b9093a5e628f2fe47ea3b2e # v4.1.7
+        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
         with:
           name: seedsigner_os_images
           path: images
@@ -148,7 +148,7 @@ jobs:
           sha256sum *.img > seedsigner_os.${{ env.source_hash }}.sha256
 
       - name: upload checksums
-        uses: actions/upload-artifact@65462800fd760344b1a7b4382951275a0abb4808 # v4.3.3
+        uses: actions/upload-artifact@0b2256b8c012f0828dc542b3febcab082c67f72b # v4.3.4
         with:
           name: seedsigner_os_images
           path: "images/*.sha256"
