@@ -284,6 +284,7 @@ def test_short_4_letter_mnemonic_qr():
 # Test data for bitcoin address decoding
 legacy_address1 = "1KFHE7w8BhaENAswwryaoccDb6qcT6DbYY"
 legacy_address2 = "16ftSEQ4ctQFDtVZiUBusQUjRrGhM3JYwe"
+test_legacy_address = "mkpZhYtJu2r87Js3pDiWJDmPte2NRZ8bJV"
 
 main_nested_segwit_address = "3Nu78Cqcf6hsD4sUBAN9nP13tYiHU9QPFX"
 test_nested_segwit_address = "2N6JbrvPMMwbBhu2KxqXyyHUQz3XKspvyfm"
@@ -309,8 +310,9 @@ def test_bitcoin_address():
             assert d.get_address() == address
             assert d.get_address_type() == (expected_script_type, expected_network)
 
-    decode(legacy_address1, SettingsConstants.LEGACY_P2PKH)    
+    decode(legacy_address1, SettingsConstants.LEGACY_P2PKH)
     decode(legacy_address2, SettingsConstants.LEGACY_P2PKH)
+    decode(test_legacy_address, SettingsConstants.LEGACY_P2PKH, SettingsConstants.TESTNET)
     decode(main_nested_segwit_address, SettingsConstants.NESTED_SEGWIT)
     decode(test_nested_segwit_address, SettingsConstants.NESTED_SEGWIT, SettingsConstants.TESTNET)
     decode(main_native_segwit_address, SettingsConstants.NATIVE_SEGWIT)
@@ -384,6 +386,7 @@ def test_bitcoin_address_ignores_case_where_allowed():
     # Case sensitive address types
     decode(legacy_address1, SettingsConstants.LEGACY_P2PKH, is_case_sensitive=True)
     decode(legacy_address2, SettingsConstants.LEGACY_P2PKH, is_case_sensitive=True)
+    decode(test_legacy_address, SettingsConstants.LEGACY_P2PKH, is_case_sensitive=True, expected_network=SettingsConstants.TESTNET)
     decode(main_nested_segwit_address, SettingsConstants.NESTED_SEGWIT, is_case_sensitive=True)
     decode(test_nested_segwit_address, SettingsConstants.NESTED_SEGWIT, is_case_sensitive=True, expected_network=SettingsConstants.TESTNET)
 
