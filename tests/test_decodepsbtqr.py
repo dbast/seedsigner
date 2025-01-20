@@ -281,69 +281,118 @@ def test_short_4_letter_mnemonic_qr():
     assert d.get_seed_phrase() == ["height", "demise", "useless", "trap", "grow", "lion", "found", "off", "key", "clown", "transfer", "enroll"]
 
 
-def test_bitcoin_address():    
-    bad1 = "loremipsum"
-    bad2 = "0xde0b295669a9fd93d5f28d9ec85e40f4cb697bae"
-    bad3 = "121802020768124106400009195602431595117715840445"
-    
-    legacy_address1 = "1KFHE7w8BhaENAswwryaoccDb6qcT6DbYY"
-    legacy_address2 = "16ftSEQ4ctQFDtVZiUBusQUjRrGhM3JYwe"
-    
-    main_bech32_address = "bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq"
-    test_bech32_address = "tb1qkurj377gtlmu0j5flcykcsh2xagexh9h3jk06a"
-    
-    main_nested_segwit_address = "3Nu78Cqcf6hsD4sUBAN9nP13tYiHU9QPFX"
-    test_nested_segwit_address = "2N6JbrvPMMwbBhu2KxqXyyHUQz3XKspvyfm"
-    
-    main_bech32_address2 = "bitcoin:bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq?amount=12000"
-    main_bech32_address3 = "BITCOIN:bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq?junk"
-    
-    d = DecodeQR()
-    d.add_data(bad1)
-    
-    assert d.qr_type == QRType.INVALID
-    
-    d = DecodeQR()
-    d.add_data(legacy_address1)
-    
-    assert d.get_address() == legacy_address1
-    assert d.get_address_type() == (SettingsConstants.LEGACY_P2PKH, SettingsConstants.MAINNET)
-    
-    d = DecodeQR()
-    d.add_data(legacy_address2)
-    
-    assert d.get_address() == legacy_address2
-    assert d.get_address_type() == (SettingsConstants.LEGACY_P2PKH, SettingsConstants.MAINNET)
-    
-    d = DecodeQR()
-    d.add_data(main_bech32_address)
-    
-    assert d.get_address() == main_bech32_address
-    assert d.get_address_type() == (SettingsConstants.NATIVE_SEGWIT, SettingsConstants.MAINNET)
-    
-    d = DecodeQR()
-    d.add_data(test_bech32_address)
-    
-    assert d.get_address() == test_bech32_address
-    assert d.get_address_type() == (SettingsConstants.NATIVE_SEGWIT, SettingsConstants.TESTNET)
-    
-    d = DecodeQR()
-    d.add_data(main_nested_segwit_address)
-    
-    assert d.get_address() == main_nested_segwit_address
-    assert d.get_address_type() == (SettingsConstants.NESTED_SEGWIT, SettingsConstants.MAINNET)
-    
-    d = DecodeQR()
-    d.add_data(test_nested_segwit_address)
+# Test data for bitcoin address decoding
+legacy_address1 = "1KFHE7w8BhaENAswwryaoccDb6qcT6DbYY"
+legacy_address2 = "16ftSEQ4ctQFDtVZiUBusQUjRrGhM3JYwe"
 
-    assert d.get_address() == test_nested_segwit_address
-    assert d.get_address_type() == (SettingsConstants.NESTED_SEGWIT, SettingsConstants.TESTNET)
+main_nested_segwit_address = "3Nu78Cqcf6hsD4sUBAN9nP13tYiHU9QPFX"
+test_nested_segwit_address = "2N6JbrvPMMwbBhu2KxqXyyHUQz3XKspvyfm"
 
-    d = DecodeQR()
-    d.add_data(main_bech32_address2)
-    
-    assert d.get_address() == "bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq"
-    assert d.get_address_type() == (SettingsConstants.NATIVE_SEGWIT, SettingsConstants.MAINNET)
+main_native_segwit_address = "bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq"
+test_native_segwit_address = "tb1qkurj377gtlmu0j5flcykcsh2xagexh9h3jk06a"
+
+main_taproot_address = "bc1p5cyxnuxmeuwuvkwfem96lqzszd02n6xdcjrs20cac6yqjjwudpxqkedrcr"
+test_taproot_address = "tb1p8wpt9v4frpf3tkn0srd97pksgsxc5hs52lafxwru9kgeephvs7rqlqt9zj"
+regtest_taproot_address = "bcrt1p8wpt9v4frpf3tkn0srd97pksgsxc5hs52lafxwru9kgeephvs7rqjeprhg"
+
+
+
+def test_bitcoin_address():
+    """
+    Decoder should parse various types of valid bitcoin addresses with or without the
+    "bitcoin:" prefix and optional query params.
+    """
+    def decode(address, expected_script_type, expected_network=SettingsConstants.MAINNET):
+        for data in [address, "bitcoin:" + address, "bitcoin:" + address + "?amount=12000"]:
+            d = DecodeQR()
+            d.add_data(data)
+            assert d.get_address() == address
+            assert d.get_address_type() == (expected_script_type, expected_network)
+
+    decode(legacy_address1, SettingsConstants.LEGACY_P2PKH)    
+    decode(legacy_address2, SettingsConstants.LEGACY_P2PKH)
+    decode(main_nested_segwit_address, SettingsConstants.NESTED_SEGWIT)
+    decode(test_nested_segwit_address, SettingsConstants.NESTED_SEGWIT, SettingsConstants.TESTNET)
+    decode(main_native_segwit_address, SettingsConstants.NATIVE_SEGWIT)
+    decode(test_native_segwit_address, SettingsConstants.NATIVE_SEGWIT, SettingsConstants.TESTNET)
+    decode(main_taproot_address, SettingsConstants.TAPROOT)
+    decode(test_taproot_address, SettingsConstants.TAPROOT, SettingsConstants.TESTNET)
+    decode(regtest_taproot_address, SettingsConstants.TAPROOT, SettingsConstants.REGTEST)
+
+
+
+def test_invalid_bitcoin_address():
+    """
+    Decoder should fail to parse invalid address data.
+    * Test incorrect "bitcoin:" prefix.
+    * Test invalid addresses.
+    * Test valid addresses w/additional prefixes (to ensure regexp is not finding
+        mid-string matches) which make the data invalid.
+    """
+    bad_inputs = [
+        # wrong separator char
+        "bitcoin=bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq",
+
+        # Unrecognized addr prefix
+        "bitcoin:bcfakehrp1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq",
+
+        # valid addr w/garbage addr prefix
+        "abcbc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq",
+
+        # valid "bitcoin:" prefix w/garbage addr prefix
+        "bitcoin:abcbc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq",
+
+        # typo in "bitcoin:" prefix
+        "bitcon:bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq",
+    ]
+
+    for bad_input in bad_inputs:
+        d = DecodeQR()
+        status = d.add_data(bad_input)
+        assert status == DecodeQRStatus.INVALID
+
+
+
+def test_bitcoin_address_ignores_case_where_allowed():
+    """
+    Decoder should ignore case in QR data prefix and in the address itself (for the
+    address types where case is ignored).
+    """
+    def decode(address, expected_script_type, is_case_sensitive, expected_network=SettingsConstants.MAINNET):
+        addr_variations = [address]
+        if not is_case_sensitive:
+            # Test as-is and all uppercase
+            addr_variations.append(address.upper())
+
+        for addr_variation in addr_variations:
+            # First add prefix capitalizations
+            variations_1 = ["bitcoin:" + addr_variation, "BITCOIN:" + addr_variation]
+
+            # Now add query params
+            variations_2 = [v + "?amount=12000" for v in variations_1]
+            variations_3 = [v + "?AMOUNT=12000" for v in variations_1]
+            for data in [addr_variation] + variations_1 + variations_2 + variations_3:
+                d = DecodeQR()
+                d.add_data(data)
+                assert d.get_address_type() == (expected_script_type, expected_network)
+
+                if not is_case_sensitive:
+                    assert d.get_address() == addr_variation.lower()
+                else:
+                    assert d.get_address() == addr_variation
+
+    # Case sensitive address types
+    decode(legacy_address1, SettingsConstants.LEGACY_P2PKH, is_case_sensitive=True)
+    decode(legacy_address2, SettingsConstants.LEGACY_P2PKH, is_case_sensitive=True)
+    decode(main_nested_segwit_address, SettingsConstants.NESTED_SEGWIT, is_case_sensitive=True)
+    decode(test_nested_segwit_address, SettingsConstants.NESTED_SEGWIT, is_case_sensitive=True, expected_network=SettingsConstants.TESTNET)
+
+    # Case insensitive address types
+    decode(main_native_segwit_address, SettingsConstants.NATIVE_SEGWIT, is_case_sensitive=False)
+    decode(test_native_segwit_address, SettingsConstants.NATIVE_SEGWIT, is_case_sensitive=False, expected_network=SettingsConstants.TESTNET)
+    decode(main_taproot_address,       SettingsConstants.TAPROOT, is_case_sensitive=False)
+    decode(test_taproot_address,       SettingsConstants.TAPROOT, is_case_sensitive=False, expected_network=SettingsConstants.TESTNET)
+    decode(regtest_taproot_address,    SettingsConstants.TAPROOT, is_case_sensitive=False, expected_network=SettingsConstants.REGTEST)
 
 
 
