@@ -964,7 +964,7 @@ class BitcoinAddressQrDecoder(BaseSingleFrameQrDecoder):
                 # Legacy P2PKH. mainnet
                 self.address_type = (SettingsConstants.LEGACY_P2PKH, SettingsConstants.MAINNET)
 
-            elif addr_prefix == "m" or addr_prefix == "n":
+            elif addr_prefix in ["m", "n"]:
                 self.address_type = (SettingsConstants.LEGACY_P2PKH, SettingsConstants.TESTNET)
 
             elif addr_prefix == "3":
@@ -999,10 +999,7 @@ class BitcoinAddressQrDecoder(BaseSingleFrameQrDecoder):
             elif addr_prefix == "bcrt1p":
                 # Native Segwit (single sig or multisig), regtest
                 self.address_type = (SettingsConstants.TAPROOT, SettingsConstants.REGTEST)
-
-            else:
-                logger.debug(f"Unknown address prefix: {addr_prefix}")
-                return DecodeQRStatus.INVALID
+            # Note: there is no final "else" here because the regex won't return any other matches.
 
             # If the addr type is case-insensitive, ensure we return it lowercase
             if self.address_type[0] in [SettingsConstants.NATIVE_SEGWIT, SettingsConstants.TAPROOT]:
