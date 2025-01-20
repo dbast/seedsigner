@@ -281,20 +281,20 @@ def test_short_4_letter_mnemonic_qr():
     assert d.get_seed_phrase() == ["height", "demise", "useless", "trap", "grow", "lion", "found", "off", "key", "clown", "transfer", "enroll"]
 
 
-# Test data for bitcoin address decoding
-legacy_address1 = "1KFHE7w8BhaENAswwryaoccDb6qcT6DbYY"
-legacy_address2 = "16ftSEQ4ctQFDtVZiUBusQUjRrGhM3JYwe"
-test_legacy_address = "mkpZhYtJu2r87Js3pDiWJDmPte2NRZ8bJV"
+# Test data for bitcoin address decoding. All generated from test key: ["abandon"] * 11 + ["about"]
+legacy_address_mainnet = "1LqBGSKuX5yYUonjxT5qGfpUsXKYYWeabA"
+legacy_address_testnet = "mkpZhYtJu2r87Js3pDiWJDmPte2NRZ8bJV"
 
-main_nested_segwit_address = "3Nu78Cqcf6hsD4sUBAN9nP13tYiHU9QPFX"
-test_nested_segwit_address = "2N6JbrvPMMwbBhu2KxqXyyHUQz3XKspvyfm"
+nested_segwit_address_mainnet = "37VucYSaXLCAsxYyAPfbSi9eh4iEcbShgf"
+nested_segwit_address_testnet = "2Mww8dCYPUpKHofjgcXcBCEGmniw9CoaiD2"
 
-main_native_segwit_address = "bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq"
-test_native_segwit_address = "tb1qkurj377gtlmu0j5flcykcsh2xagexh9h3jk06a"
+native_segwit_address_mainnet = "bc1qcr8te4kr609gcawutmrza0j4xv80jy8z306fyu"
+native_segwit_address_testnet = "tb1q6rz28mcfaxtmd6v789l9rrlrusdprr9pqcpvkl"
+native_segwit_address_regtest = "bcrt1q6rz28mcfaxtmd6v789l9rrlrusdprr9pz3cppk"
 
-main_taproot_address = "bc1p5cyxnuxmeuwuvkwfem96lqzszd02n6xdcjrs20cac6yqjjwudpxqkedrcr"
-test_taproot_address = "tb1p8wpt9v4frpf3tkn0srd97pksgsxc5hs52lafxwru9kgeephvs7rqlqt9zj"
-regtest_taproot_address = "bcrt1p8wpt9v4frpf3tkn0srd97pksgsxc5hs52lafxwru9kgeephvs7rqjeprhg"
+taproot_address_mainnet = "bc1p5cyxnuxmeuwuvkwfem96lqzszd02n6xdcjrs20cac6yqjjwudpxqkedrcr"
+taproot_address_testnet = "tb1p8wpt9v4frpf3tkn0srd97pksgsxc5hs52lafxwru9kgeephvs7rqlqt9zj"
+taproot_address_regtest = "bcrt1p8wpt9v4frpf3tkn0srd97pksgsxc5hs52lafxwru9kgeephvs7rqjeprhg"
 
 
 
@@ -310,16 +310,16 @@ def test_bitcoin_address():
             assert d.get_address() == address
             assert d.get_address_type() == (expected_script_type, expected_network)
 
-    decode(legacy_address1, SettingsConstants.LEGACY_P2PKH)
-    decode(legacy_address2, SettingsConstants.LEGACY_P2PKH)
-    decode(test_legacy_address, SettingsConstants.LEGACY_P2PKH, SettingsConstants.TESTNET)
-    decode(main_nested_segwit_address, SettingsConstants.NESTED_SEGWIT)
-    decode(test_nested_segwit_address, SettingsConstants.NESTED_SEGWIT, SettingsConstants.TESTNET)
-    decode(main_native_segwit_address, SettingsConstants.NATIVE_SEGWIT)
-    decode(test_native_segwit_address, SettingsConstants.NATIVE_SEGWIT, SettingsConstants.TESTNET)
-    decode(main_taproot_address, SettingsConstants.TAPROOT)
-    decode(test_taproot_address, SettingsConstants.TAPROOT, SettingsConstants.TESTNET)
-    decode(regtest_taproot_address, SettingsConstants.TAPROOT, SettingsConstants.REGTEST)
+    decode(legacy_address_mainnet, SettingsConstants.LEGACY_P2PKH)
+    decode(legacy_address_testnet, SettingsConstants.LEGACY_P2PKH, SettingsConstants.TESTNET)
+    decode(nested_segwit_address_mainnet, SettingsConstants.NESTED_SEGWIT)
+    decode(nested_segwit_address_testnet, SettingsConstants.NESTED_SEGWIT, SettingsConstants.TESTNET)
+    decode(native_segwit_address_mainnet, SettingsConstants.NATIVE_SEGWIT)
+    decode(native_segwit_address_testnet, SettingsConstants.NATIVE_SEGWIT, SettingsConstants.TESTNET)
+    decode(native_segwit_address_regtest, SettingsConstants.NATIVE_SEGWIT, SettingsConstants.REGTEST)
+    decode(taproot_address_mainnet, SettingsConstants.TAPROOT)
+    decode(taproot_address_testnet, SettingsConstants.TAPROOT, SettingsConstants.TESTNET)
+    decode(taproot_address_regtest, SettingsConstants.TAPROOT, SettingsConstants.REGTEST)
 
 
 
@@ -384,18 +384,18 @@ def test_bitcoin_address_ignores_case_where_allowed():
                     assert d.get_address() == addr_variation
 
     # Case sensitive address types
-    decode(legacy_address1, SettingsConstants.LEGACY_P2PKH, is_case_sensitive=True)
-    decode(legacy_address2, SettingsConstants.LEGACY_P2PKH, is_case_sensitive=True)
-    decode(test_legacy_address, SettingsConstants.LEGACY_P2PKH, is_case_sensitive=True, expected_network=SettingsConstants.TESTNET)
-    decode(main_nested_segwit_address, SettingsConstants.NESTED_SEGWIT, is_case_sensitive=True)
-    decode(test_nested_segwit_address, SettingsConstants.NESTED_SEGWIT, is_case_sensitive=True, expected_network=SettingsConstants.TESTNET)
+    decode(legacy_address_mainnet, SettingsConstants.LEGACY_P2PKH, is_case_sensitive=True)
+    decode(legacy_address_testnet, SettingsConstants.LEGACY_P2PKH, is_case_sensitive=True, expected_network=SettingsConstants.TESTNET)
+    decode(nested_segwit_address_mainnet, SettingsConstants.NESTED_SEGWIT, is_case_sensitive=True)
+    decode(nested_segwit_address_testnet, SettingsConstants.NESTED_SEGWIT, is_case_sensitive=True, expected_network=SettingsConstants.TESTNET)
 
     # Case insensitive address types
-    decode(main_native_segwit_address, SettingsConstants.NATIVE_SEGWIT, is_case_sensitive=False)
-    decode(test_native_segwit_address, SettingsConstants.NATIVE_SEGWIT, is_case_sensitive=False, expected_network=SettingsConstants.TESTNET)
-    decode(main_taproot_address,       SettingsConstants.TAPROOT, is_case_sensitive=False)
-    decode(test_taproot_address,       SettingsConstants.TAPROOT, is_case_sensitive=False, expected_network=SettingsConstants.TESTNET)
-    decode(regtest_taproot_address,    SettingsConstants.TAPROOT, is_case_sensitive=False, expected_network=SettingsConstants.REGTEST)
+    decode(native_segwit_address_mainnet, SettingsConstants.NATIVE_SEGWIT, is_case_sensitive=False)
+    decode(native_segwit_address_testnet, SettingsConstants.NATIVE_SEGWIT, is_case_sensitive=False, expected_network=SettingsConstants.TESTNET)
+    decode(native_segwit_address_regtest, SettingsConstants.NATIVE_SEGWIT, is_case_sensitive=False, expected_network=SettingsConstants.REGTEST)
+    decode(taproot_address_mainnet, SettingsConstants.TAPROOT, is_case_sensitive=False)
+    decode(taproot_address_testnet, SettingsConstants.TAPROOT, is_case_sensitive=False, expected_network=SettingsConstants.TESTNET)
+    decode(taproot_address_regtest, SettingsConstants.TAPROOT, is_case_sensitive=False, expected_network=SettingsConstants.REGTEST)
 
 
 
