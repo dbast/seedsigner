@@ -1722,8 +1722,8 @@ class AddressVerificationStartView(View):
                 destination = Destination(SeedSelectSeedView, view_args=dict(flow=Controller.FLOW__VERIFY_SINGLESIG_ADDR), skip_current_view=True)
 
         elif self.controller.unverified_address["script_type"] == SettingsConstants.TAPROOT:
-            # TODO: add Taproot support
-            return Destination(NotYetImplementedView)
+            sig_type = SettingsConstants.SINGLE_SIG
+            destination = Destination(SeedSelectSeedView, view_args=dict(flow=Controller.FLOW__VERIFY_SINGLESIG_ADDR), skip_current_view=True)
 
         derivation_path = embit_utils.get_standard_derivation_path(
             network=self.controller.unverified_address["network"],
@@ -1815,10 +1815,6 @@ class SeedAddressVerificationView(View):
         self.script_type = self.controller.unverified_address["script_type"]
         self.sig_type = self.controller.unverified_address["sig_type"]
         self.network = self.controller.unverified_address["network"]
-
-        if self.script_type == SettingsConstants.TAPROOT:
-            # TODO: Taproot addr verification
-            return Destination(NotYetImplementedView)
 
         # TODO: This should be in `Seed` or `PSBT` utility class
         embit_network = SettingsConstants.map_network_to_embit(self.network)
