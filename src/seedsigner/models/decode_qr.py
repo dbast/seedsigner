@@ -989,15 +989,12 @@ class BitcoinAddressQrDecoder(BaseSingleFrameQrDecoder):
                 self.address_type = (SettingsConstants.NATIVE_SEGWIT, SettingsConstants.REGTEST)
 
             elif addr_prefix == "bc1p":
-                # Native Segwit (single sig or multisig), mainnet 
                 self.address_type = (SettingsConstants.TAPROOT, SettingsConstants.MAINNET)
 
             elif addr_prefix == "tb1p":
-                # Native Segwit (single sig or multisig), testnet
                 self.address_type = (SettingsConstants.TAPROOT, SettingsConstants.TESTNET)
 
             elif addr_prefix == "bcrt1p":
-                # Native Segwit (single sig or multisig), regtest
                 self.address_type = (SettingsConstants.TAPROOT, SettingsConstants.REGTEST)
             # Note: there is no final "else" here because the regex won't return any other matches.
 
